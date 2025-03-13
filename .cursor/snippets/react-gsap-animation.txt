@@ -1,0 +1,53 @@
+// GSAP Animation Template
+// Usage: Type 'react-gsap-animation' and press Tab
+import { useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+
+export const use${1:AnimationName}Animation = (
+  ${2:triggerCondition}: ${3:boolean} = true,
+  ${4:options}: {
+    duration?: number;
+    delay?: number;
+    ease?: string;
+    ${5:customOption}?: ${6:type};
+  } = {}
+) => {
+  const elementRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (!elementRef.current || !${2:triggerCondition}) return;
+    
+    const {
+      duration = 0.5,
+      delay = 0,
+      ease = 'power2.out',
+      ${5:customOption} = ${7:defaultValue},
+    } = ${4:options};
+    
+    // Create animation timeline
+    const tl = gsap.timeline({
+      paused: true,
+      defaults: { duration, ease }
+    });
+    
+    // Add animations to timeline
+    tl.from(elementRef.current, {
+      opacity: 0,
+      y: 20,
+      ${8:// Additional animation properties}
+    })
+    ${9:.to(elementRef.current, {
+      ${10:// Additional animation step}
+    })};
+    
+    // Play the animation with delay
+    tl.play(delay);
+    
+    // Cleanup function
+    return () => {
+      tl.kill();
+    };
+  }, [${2:triggerCondition}, ${4:options}]);
+  
+  return elementRef;
+}; 

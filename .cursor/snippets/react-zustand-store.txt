@@ -1,0 +1,26 @@
+// Zustand Store Template
+// Usage: Type 'react-zustand-store' and press Tab
+import { create } from 'zustand';
+
+interface ${1:StoreName}State {
+  ${2:property}: ${3:type};
+  ${4:anotherProperty}: ${5:type};
+  ${6:setProperty}: (${2:property}: ${3:type}) => void;
+  ${7:setAnotherProperty}: (${4:anotherProperty}: ${5:type}) => void;
+  ${8:resetState}: () => void;
+}
+
+const initial${1:StoreName}State = {
+  ${2:property}: ${9:initialValue},
+  ${4:anotherProperty}: ${10:initialValue},
+};
+
+export const use${1:StoreName}Store = create<${1:StoreName}State>((set) => ({
+  ...initial${1:StoreName}State,
+  
+  ${6:setProperty}: (${2:property}) => set({ ${2:property} }),
+  
+  ${7:setAnotherProperty}: (${4:anotherProperty}) => set({ ${4:anotherProperty} }),
+  
+  ${8:resetState}: () => set(initial${1:StoreName}State),
+})); 

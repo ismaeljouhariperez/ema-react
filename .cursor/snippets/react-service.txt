@@ -1,0 +1,48 @@
+// API Service Template
+// Usage: Type 'react-service' and press Tab
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
+
+export interface ${1:EntityName} {
+  id: number;
+  ${2:property}: ${3:string};
+  ${4:anotherProperty}: ${5:number};
+}
+
+export interface ${1:EntityName}CreateDTO {
+  ${2:property}: ${3:string};
+  ${4:anotherProperty}: ${5:number};
+}
+
+export interface ${1:EntityName}UpdateDTO {
+  ${2:property}?: ${3:string};
+  ${4:anotherProperty}?: ${5:number};
+}
+
+const ${6:entityNameLower}Api = {
+  getAll: async (): Promise<${1:EntityName}[]> => {
+    const response = await axios.get(`${API_BASE_URL}/${7:endpoint}`);
+    return response.data;
+  },
+  
+  getById: async (id: number): Promise<${1:EntityName}> => {
+    const response = await axios.get(`${API_BASE_URL}/${7:endpoint}/${id}`);
+    return response.data;
+  },
+  
+  create: async (data: ${1:EntityName}CreateDTO): Promise<${1:EntityName}> => {
+    const response = await axios.post(`${API_BASE_URL}/${7:endpoint}`, data);
+    return response.data;
+  },
+  
+  update: async (id: number, data: ${1:EntityName}UpdateDTO): Promise<${1:EntityName}> => {
+    const response = await axios.put(`${API_BASE_URL}/${7:endpoint}/${id}`, data);
+    return response.data;
+  },
+  
+  delete: async (id: number): Promise<void> => {
+    await axios.delete(`${API_BASE_URL}/${7:endpoint}/${id}`);
+  }
+};
+
+export default ${6:entityNameLower}Api; 

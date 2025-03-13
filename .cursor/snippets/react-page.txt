@@ -1,0 +1,58 @@
+// React Page Template
+// Usage: Type 'react-page' and press Tab
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+
+// Import services and components
+import ${1:EntityName}Service from '../services/${1/(.*)/${1:/lowercase}/}Service';
+import Loading from '../components/common/Loading';
+import ErrorMessage from '../components/common/ErrorMessage';
+
+const ${1:EntityName}Page: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  const { data: ${2:entityInstance}, isLoading, error } = useQuery(
+    ['${1/(.*)/${1:/lowercase}/}', id],
+    () => ${1:EntityName}Service.getById(Number(id)),
+    {
+      enabled: !!id,
+      onError: (err) => {
+        console.error('Error fetching ${1/(.*)/${1:/lowercase}/}:', err);
+      }
+    }
+  );
+
+  if (isLoading) return <Loading />;
+  if (error) return <ErrorMessage message="Failed to load ${1/(.*)/${1:/lowercase}/}" />;
+  if (!${2:entityInstance}) return <ErrorMessage message="${1:EntityName} not found" />;
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">${1:EntityName} Details</h1>
+      
+      <div className="bg-white shadow rounded-lg p-6">
+        ${3:// Page content here}
+      </div>
+      
+      <div className="mt-4 flex space-x-2">
+        <button 
+          onClick={() => navigate('/${1/(.*)/${1:/lowercase}/}s')}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Back to List
+        </button>
+        
+        <button 
+          onClick={() => navigate(`/${1/(.*)/${1:/lowercase}/}s/${id}/edit`)}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ${1:EntityName}Page;

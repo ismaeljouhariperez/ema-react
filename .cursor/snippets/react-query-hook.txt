@@ -1,0 +1,70 @@
+// React Query Hook Template
+// Usage: Type 'react-query-hook' and press Tab
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import ${1:EntityName}Service from '../services/${1/(.*)/${1:/lowercase}/}Service';
+import type { ${1:EntityName}, ${1:EntityName}CreateDTO, ${1:EntityName}UpdateDTO } from '../services/${1/(.*)/${1:/lowercase}/}Service';
+
+export const use${1:EntityName}s = () => {
+  return useQuery<${1:EntityName}[], Error>(
+    ['${1/(.*)/${1:/lowercase}/}s'],
+    () => ${1:EntityName}Service.getAll(),
+    {
+      staleTime: ${2:5 * 60 * 1000}, // 5 minutes
+      ${3:// Additional options}
+    }
+  );
+};
+
+export const use${1:EntityName} = (id: number) => {
+  return useQuery<${1:EntityName}, Error>(
+    ['${1/(.*)/${1:/lowercase}/}', id],
+    () => ${1:EntityName}Service.getById(id),
+    {
+      enabled: !!id,
+      ${4:// Additional options}
+    }
+  );
+};
+
+export const useCreate${1:EntityName} = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation<${1:EntityName}, Error, ${1:EntityName}CreateDTO>(
+    (data) => ${1:EntityName}Service.create(data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['${1/(.*)/${1:/lowercase}/}s']);
+      },
+      ${5:// Additional options}
+    }
+  );
+};
+
+export const useUpdate${1:EntityName} = (id: number) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation<${1:EntityName}, Error, ${1:EntityName}UpdateDTO>(
+    (data) => ${1:EntityName}Service.update(id, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['${1/(.*)/${1:/lowercase}/}', id]);
+        queryClient.invalidateQueries(['${1/(.*)/${1:/lowercase}/}s']);
+      },
+      ${6:// Additional options}
+    }
+  );
+};
+
+export const useDelete${1:EntityName} = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation<void, Error, number>(
+    (id) => ${1:EntityName}Service.delete(id),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['${1/(.*)/${1:/lowercase}/}s']);
+      },
+      ${7:// Additional options}
+    }
+  );
+}; 

@@ -1,0 +1,84 @@
+// Leaflet Map Component Template
+// Usage: Type 'react-leaflet-map' and press Tab
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default marker icons
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
+
+interface ${1:MapName}Props {
+  center: [number, number];
+  zoom: number;
+  markers?: Array<{
+    id: number | string;
+    position: [number, number];
+    title: string;
+    description?: string;
+  }>;
+  onMarkerClick?: (id: number | string) => void;
+}
+
+// Component to handle map events and updates
+const MapController: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  
+  return null;
+};
+
+export const ${1:MapName}: React.FC<${1:MapName}Props> = ({
+  center = [48.8566, 2.3522], // Default to Paris
+  zoom = 13,
+  markers = [],
+  onMarkerClick
+}) => {
+  return (
+    <MapContainer 
+      center={center} 
+      zoom={zoom} 
+      style={{ height: '500px', width: '100%' }}
+      className="rounded-lg shadow-md"
+    >
+      <MapController center={center} zoom={zoom} />
+      
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      
+      {markers.map(marker => (
+        <Marker 
+          key={marker.id}
+          position={marker.position}
+          eventHandlers={{
+            click: () => onMarkerClick && onMarkerClick(marker.id)
+          }}
+        >
+          <Popup>
+            <div>
+              <h3 className="font-bold">{marker.title}</h3>
+              {marker.description && <p>{marker.description}</p>}
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
+  );
+};
+
+export default ${1:MapName}; 

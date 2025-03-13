@@ -1,0 +1,26 @@
+// Custom React Hook Template
+// Usage: Type 'react-hook' and press Tab
+import { useState, useEffect } from 'react';
+
+export const use${1:CustomHook} = (${2:param}: ${3:type}) => {
+  const [${4:state}, set${4/(.*)/${1:/capitalize}/}] = useState<${5:stateType}>(${6:initialValue});
+
+  useEffect(() => {
+    // Effect logic here
+    ${7:// Your effect code}
+    
+    return () => {
+      // Cleanup logic here (optional)
+      ${8:// Your cleanup code}
+    };
+  }, [${2:param}]);
+
+  const ${9:customFunction} = () => {
+    ${10:// Your function logic}
+  };
+
+  return {
+    ${4:state},
+    ${9:customFunction}
+  };
+}; 

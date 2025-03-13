@@ -1,0 +1,69 @@
+{
+  "typescript": {
+    "formatter": "prettier",
+    "linter": "eslint",
+    "formatOnSave": true,
+    "lintOnSave": true,
+    "importSorter": "eslint",
+    "sortImportsOnSave": true,
+    "typescriptPath": "${workspaceFolder}/node_modules/typescript/lib",
+    "testFramework": "vitest",
+    "testCommand": "npm test",
+    "testDiscoveryPatterns": ["src/**/*.test.{ts,tsx}"],
+    "codeLens": {
+      "runTest": true,
+      "debugTest": true
+    }
+  },
+  "react": {
+    "componentPatterns": ["src/components/**/*.tsx", "src/pages/**/*.tsx"],
+    "hooksPatterns": ["src/hooks/**/*.ts"],
+    "storePatterns": ["src/store/**/*.ts"],
+    "servicePatterns": ["src/services/**/*.ts"]
+  },
+  "tailwind": {
+    "configPath": "${workspaceFolder}/tailwind.config.js",
+    "cssPath": "${workspaceFolder}/src/index.css"
+  },
+  "gsap": {
+    "patterns": ["src/animations/**/*.ts", "src/**/*.animation.ts"]
+  },
+  "leaflet": {
+    "patterns": ["src/components/map/**/*.tsx"]
+  },
+  "editor": {
+    "formatOnSave": true,
+    "tabSize": 2,
+    "insertSpaces": true,
+    "rulers": [100],
+    "wordWrap": "off",
+    "trimTrailingWhitespace": true,
+    "insertFinalNewline": true
+  },
+  "files": {
+    "exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/coverage": true
+    },
+    "watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/build/**": true,
+      "**/.git/**": true,
+      "**/coverage/**": true
+    }
+  },
+  "search": {
+    "exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.git": true,
+      "**/coverage": true
+    }
+  }
+}
