@@ -3,11 +3,47 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { useMapStore } from "@/store/mapStore";
+import { useStore } from "@/store/useStore";
 
 const MapSection = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
   const { setMap, setIsInitialized } = useMapStore();
+  const { adventures } = useStore();
+
+  // Nettoyer les marqueurs existants
+  const clearMarkers = () => {
+    markersRef.current.forEach((marker) => {
+      marker.remove();
+    });
+    markersRef.current = [];
+  };
+
+  // Ajouter les marqueurs des aventures
+  const addAdventureMarkers = () => {
+    if (!mapInstance.current) return;
+
+    clearMarkers();
+
+    adventures.forEach((adventure) => {
+      const marker = L.marker([adventure.latitude, adventure.longitude]).addTo(
+        mapInstance.current!
+      ).bindPopup(`
+          <div class="p-2">
+            <h3 class="font-bold">${adventure.title}</h3>
+            <p class="text-sm">${adventure.description}</p>
+            <div class="text-xs mt-2">
+              <p>Difficulté: ${adventure.difficulty}</p>
+              <p>Durée: ${adventure.duration}</p>
+              <p>Distance: ${adventure.distance} km</p>
+            </div>
+          </div>
+        `);
+
+      markersRef.current.push(marker);
+    });
+  };
 
   useEffect(() => {
     if (!mapContainer.current || mapInstance.current) return;
@@ -32,12 +68,12 @@ const MapSection = () => {
       })
       .addTo(newMap);
 
-    // Stocker l'instance de la carte dans la ref locale
     mapInstance.current = newMap;
-
-    // Mettre à jour le store
     setMap(newMap);
     setIsInitialized(true);
+
+    // Ajouter les marqueurs initiaux
+    addAdventureMarkers();
 
     // Forcer un redimensionnement après que la carte soit montée
     const timer = setTimeout(() => {
@@ -47,6 +83,7 @@ const MapSection = () => {
     }, 250);
 
     return () => {
+      clearMarkers();
       clearTimeout(timer);
       if (mapInstance.current) {
         mapInstance.current.remove();
@@ -56,6 +93,11 @@ const MapSection = () => {
       }
     };
   }, []); // Ne dépend plus de isInitialized
+
+  // Mettre à jour les marqueurs quand les aventures changent
+  useEffect(() => {
+    addAdventureMarkers();
+  }, [adventures]);
 
   return (
     <div className="w-full h-full p-4" style={{ minHeight: "600px" }}>
