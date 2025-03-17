@@ -1,35 +1,50 @@
 import { create } from "zustand";
 
-export interface Adventure {
-  id: number;
+interface Adventure {
+  id: string;
   title: string;
   description: string;
-  latitude: number;
-  longitude: number;
   difficulty: string;
   duration: string;
   distance: number;
-  images: string[];
+  latitude: number;
+  longitude: number;
+}
+
+interface Filters {
+  search: string;
+  difficulty: string | null;
+  duration: string | null;
+  maxDistance: number;
 }
 
 interface Store {
-  adventures: Adventure[];
-  selectedAdventure: Adventure | null;
   prompt: string;
-  isLoading: boolean;
-  setAdventures: (adventures: Adventure[]) => void;
-  setSelectedAdventure: (adventure: Adventure | null) => void;
   setPrompt: (prompt: string) => void;
+  isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
+  adventures: Adventure[];
+  setAdventures: (adventures: Adventure[]) => void;
+  selectedAdventure: Adventure | null;
+  setSelectedAdventure: (adventure: Adventure | null) => void;
+  filters: Filters;
+  setFilters: (filters: Filters) => void;
 }
 
 export const useStore = create<Store>((set) => ({
-  adventures: [],
-  selectedAdventure: null,
   prompt: "",
-  isLoading: false,
-  setAdventures: (adventures) => set({ adventures }),
-  setSelectedAdventure: (adventure) => set({ selectedAdventure: adventure }),
   setPrompt: (prompt) => set({ prompt }),
+  isLoading: false,
   setIsLoading: (isLoading) => set({ isLoading }),
+  adventures: [],
+  setAdventures: (adventures) => set({ adventures }),
+  selectedAdventure: null,
+  setSelectedAdventure: (adventure) => set({ selectedAdventure: adventure }),
+  filters: {
+    search: "",
+    difficulty: null,
+    duration: null,
+    maxDistance: 50,
+  },
+  setFilters: (filters) => set({ filters }),
 }));

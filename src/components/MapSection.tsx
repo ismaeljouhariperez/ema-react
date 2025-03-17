@@ -3,14 +3,28 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.locatecontrol/dist/L.Control.Locate.min.css";
 import "leaflet.locatecontrol";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
 import { useStore } from "@/store/useStore";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { AdventureFilters } from "./AdventureFilters";
+import { X } from "lucide-react";
 import gsap from "gsap";
 
 const MapSection = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
-  const { adventures, selectedAdventure } = useStore();
+  const markerCluster = useRef<L.MarkerClusterGroup | null>(null);
+  const { adventures, selectedAdventure, setSelectedAdventure, filters } =
+    useStore();
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -22,6 +36,17 @@ const MapSection = () => {
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map.current);
+
+    // Initialiser le cluster de marqueurs
+    markerCluster.current = L.markerClusterGroup({
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      animate: true,
+      chunkedLoading: true,
+      disableClusteringAtZoom: 16,
     }).addTo(map.current);
 
     // Ajouter les contrôles de zoom
@@ -59,19 +84,31 @@ const MapSection = () => {
     };
   }, []);
 
-  // Mettre à jour les marqueurs quand les aventures changent
+  // Mettre à jour les marqueurs quand les aventures ou les filtres changent
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !markerCluster.current) return;
 
-    // Supprimer les marqueurs existants
-    map.current.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        map.current?.removeLayer(layer);
-      }
+    // Nettoyer les marqueurs existants
+    markerCluster.current.clearLayers();
+
+    // Filtrer les aventures
+    const filteredAdventures = adventures.filter((adventure) => {
+      const matchesSearch = adventure.title
+        .toLowerCase()
+        .includes(filters.search.toLowerCase());
+      const matchesDifficulty =
+        !filters.difficulty || adventure.difficulty === filters.difficulty;
+      const matchesDuration =
+        !filters.duration || adventure.duration === filters.duration;
+      const matchesDistance = adventure.distance <= filters.maxDistance;
+
+      return (
+        matchesSearch && matchesDifficulty && matchesDuration && matchesDistance
+      );
     });
 
     // Ajouter les nouveaux marqueurs
-    adventures.forEach((adventure) => {
+    filteredAdventures.forEach((adventure) => {
       const marker = L.marker([adventure.latitude, adventure.longitude])
         .bindPopup(
           `
@@ -81,7 +118,16 @@ const MapSection = () => {
           </div>
         `
         )
-        .addTo(map.current!);
+        .on("click", () => {
+          setSelectedAdventure(adventure);
+          // Animation du panneau de détails
+          gsap.from(".adventure-details", {
+            opacity: 0,
+            y: 20,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
 
       // Animation du marqueur
       marker.on("add", () => {
@@ -95,16 +141,49 @@ const MapSection = () => {
           });
         }
       });
+
+      markerCluster.current.addLayer(marker);
     });
-  }, [adventures]);
+  }, [adventures, filters, setSelectedAdventure]);
 
   return (
-    <div className="map-section h-full p-6 bg-background">
+    <div className="map-section h-full p-6 bg-background relative">
       <Card className="h-full overflow-hidden">
         <CardContent className="p-0 h-full">
           <div ref={mapContainer} className="h-full w-full" />
         </CardContent>
       </Card>
+
+      {/* Panneau de filtres */}
+      <AdventureFilters />
+
+      {/* Panneau de détails de l'aventure */}
+      {selectedAdventure && (
+        <div className="adventure-details absolute bottom-6 left-6 right-6 max-w-md">
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardHeader className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2"
+                onClick={() => setSelectedAdventure(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <CardTitle>{selectedAdventure.title}</CardTitle>
+              <CardDescription>
+                {selectedAdventure.difficulty} • {selectedAdventure.duration} •{" "}
+                {selectedAdventure.distance}km
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600">
+                {selectedAdventure.description}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
