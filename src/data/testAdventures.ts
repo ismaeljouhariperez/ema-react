@@ -8,8 +8,8 @@ export const testAdventures: Adventure[] = [
     difficulty: "Moyen",
     duration: "2-4h",
     distance: 8.5,
-    latitude: 46.603354,
-    longitude: 1.888334,
+    latitude: 48.1373,
+    longitude: 7.1856,
   },
   {
     id: "2",
@@ -18,8 +18,8 @@ export const testAdventures: Adventure[] = [
     difficulty: "Facile",
     duration: "1-2h",
     distance: 4.2,
-    latitude: 46.603354,
-    longitude: 1.888334,
+    latitude: 45.8492,
+    longitude: 6.1725,
   },
   {
     id: "3",
@@ -38,7 +38,7 @@ export const testAdventures: Adventure[] = [
     difficulty: "Moyen",
     duration: "4h+",
     distance: 12.3,
-    latitude: 46.603354,
-    longitude: 1.888334,
+    latitude: 43.8667,
+    longitude: -1.7015,
   },
 ];
