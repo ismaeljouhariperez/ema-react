@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface Adventure {
+export interface Adventure {
   id: string;
   title: string;
   description: string;

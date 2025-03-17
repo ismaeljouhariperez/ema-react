@@ -1,6 +1,4 @@
-import { useStore } from "@/store/useStore";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -8,55 +6,51 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useStore } from "@/store/useStore";
 import gsap from "gsap";
 
 const PromptSection = () => {
   const { prompt, setPrompt, isLoading } = useStore();
 
   useEffect(() => {
-    // Animation d'entrée avec GSAP
     gsap.from(".prompt-section", {
-      opacity: 0,
-      x: -50,
-      duration: 0.8,
-      ease: "power3.out",
+      y: 50,
+      opacity: 0.8,
+      duration: 0.5,
+      ease: "power2.out",
     });
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!prompt.trim()) return;
-
-    // TODO: Implémenter l'appel à l'API
-    console.log("Prompt soumis:", prompt);
+    console.log("Prompt submitted:", prompt);
   };
 
   return (
-    <div className="prompt-section h-full p-6 bg-background">
-      <Card className="h-full">
+    <div className="h-full p-6 bg-background">
+      <Card className="prompt-section">
         <CardHeader>
-          <CardTitle className="text-2xl">
-            Découvrez des micro-aventures
-          </CardTitle>
-          <CardDescription>
-            Décrivez votre envie d'aventure et laissez l'IA vous guider vers des
-            destinations inattendues.
+          <CardTitle>Découvrez des micro-aventures</CardTitle>
+          <CardDescription className="text-foreground">
+            Décrivez le type d'aventure que vous recherchez et laissez-moi vous
+            guider.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
+            placeholder="Ex: Je recherche une randonnée facile de 2h près de Paris..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Ex: Je cherche une randonnée facile avec un lac en montagne..."
-            className="min-h-[200px] resize-none"
+            className="min-h-[100px] bg-background text-foreground"
           />
           <Button
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full"
-            size="lg"
           >
-            {isLoading ? "Recherche en cours..." : "Trouver des aventures"}
+            {isLoading ? "Recherche en cours..." : "Trouver une aventure"}
           </Button>
         </CardContent>
       </Card>
